@@ -1,8 +1,16 @@
 require "minruby"
+require "./tokenizer"
 
 class MathRubyParser < MinRubyParser
+  include MyTokenizer
+  attr_reader :program
+
   def self.mathruby_parse(program)
-    MathRubyParser.new.mathruby_parse(program)
+    MathRubyParser.new(program).mathruby_parse(program)
+  end
+
+  def initialize(program)
+    @program = program
   end
 
   def mathruby_parse(program)
@@ -10,7 +18,9 @@ class MathRubyParser < MinRubyParser
   end
 
   def simplify(exp)
-    case exp[0]
+    nodes = reparse(program) if exp.nil?
+
+    case exp&.first || nodes[0]
     when :opassign
       case exp[1][0]
       when :var_field
