@@ -49,6 +49,10 @@ module MyCalcurator
       else
         evaluate(tree[3], env)
       end
+    when "while"
+      while evaluate(tree[1], env)
+        evaluate(tree[2], env)
+      end
     else
       p "Unsupported operator: '#{tree[0]}'"
       pp tree
