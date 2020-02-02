@@ -41,6 +41,12 @@ module MyCalcurator
       env[tree[1]]
     when "func_call"
       p evaluate(tree[2], env)
+    when "if"
+      if evaluate(tree[1], env)
+        evaluate(tree[2], env)
+      else
+        evaluate(tree[3], env)
+      end
     else
       p "Unsupported operator: '#{tree[0]}'"
       pp tree
