@@ -1,4 +1,4 @@
-require "minruby"
+require "./mathruby"
 
 module MyCalcurator
   def evaluate(tree, env)
@@ -59,8 +59,8 @@ module MyCalcurator
     end
   end
 
-  def parse(exp)
-    tree = minruby_parse(exp)
+  def parse(exp = nil)
+    tree = MathRubyParser.mathruby_parse(exp)
     env = {}
     evaluate(tree, env)
   end
