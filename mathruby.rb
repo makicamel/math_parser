@@ -18,9 +18,9 @@ class MathRubyParser < MinRubyParser
   end
 
   def simplify(exp)
-    nodes = reparse(program) if exp.nil?
+    new_exp = Ripper.sexp(reparse(program)) if exp.nil?
 
-    case exp&.first || nodes[0]
+    case exp&.first || new_exp&.first
     when :opassign
       case exp[1][0]
       when :var_field
@@ -31,7 +31,7 @@ class MathRubyParser < MinRubyParser
         raise
       end
     else
-      super
+      super(exp || new_exp)
     end
   end
 end
