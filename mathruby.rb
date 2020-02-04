@@ -6,14 +6,14 @@ class MathRubyParser < MinRubyParser
   attr_reader :program
 
   def self.mathruby_parse(program)
-    MathRubyParser.new(program).mathruby_parse(program)
+    new(program).mathruby_parse
   end
 
   def initialize(program)
     @program = program
   end
 
-  def mathruby_parse(program)
+  def mathruby_parse
     simplify(Ripper.sexp(program))
   end
 
