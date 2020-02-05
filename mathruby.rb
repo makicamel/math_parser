@@ -18,7 +18,7 @@ class MathRubyParser < MinRubyParser
   end
 
   def simplify(exp)
-    new_exp = Ripper.sexp(reparse(program)) if exp.nil?
+    new_exp = Ripper.sexp(reparse(program.strip)) if exp.nil?
 
     case exp&.first || new_exp&.first
     when :opassign

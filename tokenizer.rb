@@ -27,7 +27,10 @@ module MyTokenizer
 
   def reparse(exp)
     tokens = Ripper.lex(exp)
-    convert(tokens)
+    converted_exp = convert(tokens)
+    original_exp = tokens.map { |token| token[2] unless token[2] == " " }.compact.join " "
+    exp.sub!(original_exp, converted_exp)
+    Ripper.sexp(exp).nil? ? reparse(exp) : exp
   end
 
 private
