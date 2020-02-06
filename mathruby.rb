@@ -9,11 +9,11 @@ class MathRubyParser < MinRubyParser
   end
 
   def mathruby_parse(program)
-    trees = program.split(";").map do |statement|
-      fit = Ripper.sexp(statement) ? statement.strip : reparse(statement.strip)
-      simplify(Ripper.sexp(fit))
-    end
-    trees.size == 1 ? trees.first : trees.unshift("stmts")
+    statements = program.split(";").map do |statement|
+      Ripper.sexp(statement) ? statement.strip : reparse(statement.strip)
+    end.join "\n"
+
+    simplify(Ripper.sexp(statements))
   end
 
   def simplify(exp)
