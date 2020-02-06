@@ -42,7 +42,11 @@ module MyCalcurator
     when "var_ref"
       env[tree[1]]
     when "func_call"
-      p evaluate(tree[2], genv, lenv)
+      args = tree[2..].map { |t| evaluate(t, genv, lenv) }
+      if respond_to?(tree[1]) || Kernel.respond_to?(tree[1])
+        send(tree[1], *args)
+      else
+      end
     when "if"
       if evaluate(tree[1], genv, lenv)
         evaluate(tree[2], genv, lenv)
@@ -61,9 +65,7 @@ module MyCalcurator
 
   def mp(exp = nil)
     tree = MathRubyParser.mathruby_parse(exp)
-    genv = { "p" => ["builtin", "p"] }
-    lenv = {}
-    evaluate(tree, genv, lenv)
+    evaluate(tree, {}, {})
   end
 end
 
