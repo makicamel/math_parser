@@ -59,7 +59,7 @@ module MyCalcurator
     end
   end
 
-  def parse(exp = nil)
+  def mp(exp = nil)
     tree = MathRubyParser.mathruby_parse(exp)
     env = {}
     evaluate(tree, env)
