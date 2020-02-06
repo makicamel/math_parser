@@ -33,19 +33,25 @@ module MyCalcurator
       i = 1
       last = nil
       while tree[i]
-        last = evaluate(tree[i], env)
+        last = evaluate(tree[i], genv, lenv)
         i += 1
       end
       last
     when "var_assign"
-      env[tree[1]] = evaluate(tree[2], genv, lenv)
+      lenv[tree[1]] = evaluate(tree[2], genv, lenv)
     when "var_ref"
-      env[tree[1]]
+      lenv[tree[1]]
+    when "func_def"
+      genv[tree[1]] = ["user_defined", tree[2], tree[3]]
     when "func_call"
       args = tree[2..].map { |t| evaluate(t, genv, lenv) }
       if respond_to?(tree[1]) || Kernel.respond_to?(tree[1])
         send(tree[1], *args)
       else
+        mhd = genv[tree[1]]
+        params = mhd[1]
+        params.each_with_index { |param, j| lenv[param] = args[j] }
+        evaluate(mhd[2], genv, lenv)
       end
     when "if"
       if evaluate(tree[1], genv, lenv)
