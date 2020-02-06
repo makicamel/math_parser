@@ -1,6 +1,7 @@
 module MyTokenizer
   EXPR_BEG = 1
   EXPR_END = 2
+  EXPR_ARG = 16
   EXPR_LABEL = 1024
 
   def convert(tokens)
@@ -37,7 +38,7 @@ private
   end
 
   def ref_variable?(token)
-    (token[1] == :on_ident) && [EXPR_END, (EXPR_END | EXPR_LABEL)].include?(token[3])
+    (token[1] == :on_ident) && [EXPR_END, (EXPR_END | EXPR_LABEL), EXPR_ARG].include?(token[3])
   end
 
   def int?(token)
