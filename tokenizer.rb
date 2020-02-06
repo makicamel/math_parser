@@ -3,26 +3,19 @@ module MyTokenizer
   EXPR_END = 2
   EXPR_LABEL = 1024
 
-  # Ignore multiple statements for now
   def convert(tokens)
-    i = 0
-    line_no = tokens[i][0][0]
     previous_numeric = false
-    statement = []
-    while line_no == tokens[i]&.first&.first
-      if space?(tokens[i])
-        i += 1
-        next
-      end
+    tokens.map do |token|
+      next if space?(token)
 
-      if currently_numeric?(tokens[i]) && previous_numeric
-        statement << "*"
+      if currently_numeric?(token) && previous_numeric
+        previous_numeric = false
+        ["*", token[2]]
+      else
+        previous_numeric = currently_numeric?(token)
+        token[2]
       end
-      previous_numeric = currently_numeric?(tokens[i])
-      statement << tokens[i][2]
-      i += 1
-    end
-    statement.join " "
+    end.compact.join " "
   end
 
   def reparse(exp)

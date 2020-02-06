@@ -9,7 +9,7 @@ class MathRubyParser < MinRubyParser
   end
 
   def mathruby_parse(program)
-    statements = program.split(";").map do |statement|
+    statements = program.gsub(";", "\n").split("\n").map do |statement|
       Ripper.sexp(statement) ? statement.strip : reparse(statement.strip)
     end.join "\n"
 
