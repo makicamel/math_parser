@@ -44,7 +44,7 @@ private
   end
 
   def ref_variable?(token)
-    (token[1] == :on_ident) && (token[3] == EXPR_END | EXPR_LABEL)
+    (token[1] == :on_ident) && [EXPR_END, (EXPR_END | EXPR_LABEL)].include?(token[3])
   end
 
   def int?(token)
