@@ -48,10 +48,11 @@ module MyCalcurator
       if respond_to?(tree[1]) || Kernel.respond_to?(tree[1])
         send(tree[1], *args)
       else
+        func_lenv = {}
         mhd = genv[tree[1]]
         params = mhd[1]
-        params.each_with_index { |param, j| lenv[param] = args[j] }
-        evaluate(mhd[2], genv, lenv)
+        params.each_with_index { |param, j| func_lenv[param] = args[j] }
+        evaluate(mhd[2], genv, func_lenv)
       end
     when "if"
       if evaluate(tree[1], genv, lenv)
