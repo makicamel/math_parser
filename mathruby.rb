@@ -3,24 +3,21 @@ require "./tokenizer"
 
 class MathRubyParser < MinRubyParser
   include MyTokenizer
-  attr_reader :program
 
   def self.mathruby_parse(program)
-    new(program).mathruby_parse
+    new.mathruby_parse(program)
   end
 
-  def initialize(program)
-    @program = program
-  end
-
-  def mathruby_parse
-    simplify(Ripper.sexp(program))
+  def mathruby_parse(program)
+    trees = program.split(";").map do |statement|
+      fit = Ripper.sexp(statement) ? statement.strip : reparse(statement.strip)
+      simplify(Ripper.sexp(fit))
+    end
+    trees.size == 1 ? trees.first : trees.unshift("stmts")
   end
 
   def simplify(exp)
-    new_exp = Ripper.sexp(reparse(program.strip)) if exp.nil?
-
-    case exp&.first || new_exp&.first
+    case exp[0]
     when :opassign
       case exp[1][0]
       when :var_field
@@ -31,7 +28,7 @@ class MathRubyParser < MinRubyParser
         raise
       end
     else
-      super(exp || new_exp)
+      super
     end
   end
 end
