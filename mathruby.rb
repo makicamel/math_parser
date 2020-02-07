@@ -22,7 +22,7 @@ class MathRubyParser < MinRubyParser
       case exp[1][0]
       when :var_field
         var = exp[1][1][1]
-        op = exp[2][1][0]
+        op = exp[2][1][0..-2]
         ["var_assign", var, [op, ["var_ref", var], simplify(exp[3])]]
       else
         raise
