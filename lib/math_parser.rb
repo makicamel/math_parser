@@ -1,6 +1,14 @@
-require "./mathruby"
+require "math_parser/version"
+require "math_parser/mathruby_parser"
 
-module MyCalcurator
+module MathParser
+  class Error < StandardError; end
+
+  def mp(exp)
+    tree = MathRubyParser.mathruby_parse(exp)
+    evaluate(tree, {}, {})
+  end
+
   def evaluate(tree, genv, lenv)
     case tree[0]
     when "lit"
@@ -75,11 +83,6 @@ module MyCalcurator
       pp tree
     end
   end
-
-  def mp(exp = nil)
-    tree = MathRubyParser.mathruby_parse(exp)
-    evaluate(tree, {}, {})
-  end
 end
 
-include MyCalcurator
+include MathParser

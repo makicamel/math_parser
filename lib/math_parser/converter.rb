@@ -1,4 +1,4 @@
-module MyTokenizer
+module MathParser::Converter
   EXPR_BEG = 1
   EXPR_END = 2
   EXPR_ARG = 16
