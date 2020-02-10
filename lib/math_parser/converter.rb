@@ -5,24 +5,35 @@ module MathParser::Converter
   EXPR_LABEL = 1024
 
   def convert(tokens)
-    previous_numeric = false
-    tokens.map do |token|
-      next if space?(token)
+    lines = []
+    tokens.last[0][0].times do |i|
+      line_no = i + 1
+      previous_numeric = false
+      line = []
+      # TODO: It may be better to separate tokens by line_no
+      tokens.map do |token|
+        next  if line_no > token[0][0]
+        break if line_no < token[0][0]
 
-      if currently_numeric?(token) && previous_numeric
-        previous_numeric = true
-        ["*", token[2]]
-      else
-        previous_numeric = currently_numeric?(token)
-        token[2]
+        if space?(token)
+          line << token[2]
+        elsif currently_numeric?(token) && previous_numeric
+          previous_numeric = true
+          line << ["*", token[2]]
+        else
+          previous_numeric = currently_numeric?(token)
+          line << token[2]
+        end
       end
-    end.compact.join " "
+      lines << line.join("")
+    end
+    lines.join("")
   end
 
   def reparse(program)
     tokens = Ripper.lex(program)
     converted_program = convert(tokens)
-    original_program = tokens.map { |token| token[2] unless token[2] == " " }.compact.join " "
+    original_program = tokens.map { |token| token[2] }.join ""
     program.sub!(original_program, converted_program)
     Ripper.sexp(program).nil? ? reparse(program) : program
   end
@@ -34,11 +45,11 @@ private
   end
 
   def space?(token)
-    token[1] == :on_sp
+    [:on_sp, :on_nl, :on_ignored_nl].include? token[1]
   end
 
   def ref_variable?(token)
-    (token[1] == :on_ident) && [EXPR_END, (EXPR_END | EXPR_LABEL), EXPR_ARG].include?(token[3])
+    (token[1] == :on_ident) && [(EXPR_END | EXPR_LABEL), EXPR_ARG].include?(token[3])
   end
 
   def int?(token)

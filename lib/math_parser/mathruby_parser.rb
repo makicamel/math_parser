@@ -11,11 +11,8 @@ module MathParser
     end
 
     def mathruby_parse(program)
-      statements = program.gsub(";", "\n").split("\n").map do |statement|
-        Ripper.sexp(statement) ? statement.strip : reparse(statement.strip)
-      end.join "\n"
-
-      simplify(Ripper.sexp(statements))
+      converted_program = Ripper.sexp(program) ? program : reparse(program.strip)
+      simplify(Ripper.sexp(converted_program))
     end
 
     def simplify(exp)
