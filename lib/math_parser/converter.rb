@@ -19,12 +19,12 @@ module MathParser::Converter
     end.compact.join " "
   end
 
-  def reparse(exp)
-    tokens = Ripper.lex(exp)
-    converted_exp = convert(tokens)
-    original_exp = tokens.map { |token| token[2] unless token[2] == " " }.compact.join " "
-    exp.sub!(original_exp, converted_exp)
-    Ripper.sexp(exp).nil? ? reparse(exp) : exp
+  def reparse(program)
+    tokens = Ripper.lex(program)
+    converted_program = convert(tokens)
+    original_program = tokens.map { |token| token[2] unless token[2] == " " }.compact.join " "
+    program.sub!(original_program, converted_program)
+    Ripper.sexp(program).nil? ? reparse(program) : program
   end
 
 private
