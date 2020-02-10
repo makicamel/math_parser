@@ -10,7 +10,7 @@ module MathParser::Converter
       next if space?(token)
 
       if currently_numeric?(token) && previous_numeric
-        previous_numeric = false
+        previous_numeric = true
         ["*", token[2]]
       else
         previous_numeric = currently_numeric?(token)
